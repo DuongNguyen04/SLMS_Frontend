@@ -1,0 +1,63 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,500;9..144,700&display=swap');
+
+:root {
+  --bg-page: #f5f4ef;
+  --bg-panel: #ffffff;
+  --bg-soft: #f0ede4;
+  --text-primary: #1b2220;
+  --text-muted: #5e6a63;
+  --line: #d5d0c3;
+  --accent: #11765d;
+  --accent-soft: #d6efe7;
+  --accent-strong: #0d5f4b;
+  --danger: #9f2d2d;
+  --warning: #9e6224;
+  --ok: #146d41;
+  --radius-lg: 20px;
+  --radius-md: 14px;
+  --radius-sm: 10px;
+  --shadow-soft: 0 10px 40px rgba(28, 35, 31, 0.08);
+  --shadow-focus: 0 0 0 3px rgba(17, 118, 93, 0.22);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: 'Manrope', 'Segoe UI', sans-serif;
+  color: var(--text-primary);
+  background:
+    radial-gradient(1200px 640px at 100% -5%, rgba(17, 118, 93, 0.12), transparent 60%),
+    radial-gradient(900px 400px at -10% 20%, rgba(219, 167, 95, 0.16), transparent 54%),
+    var(--bg-page);
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+  color: var(--text-primary);
+  font-family: 'Fraunces', Georgia, serif;
+  letter-spacing: -0.02em;
+}
+
+p {
+  margin: 0;
+}
+
+a {
+  color: inherit;
+}
+
+input,
+select,
+button {
+  font: inherit;
+}
+
+#root {
+  min-height: 100vh;
+}
