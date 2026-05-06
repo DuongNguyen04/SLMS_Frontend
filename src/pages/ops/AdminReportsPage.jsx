@@ -35,6 +35,27 @@ export default function AdminReportsPage() {
     }
   }
 
+  const downloadReport = async (report) => {
+    if (!report?.fileName) {
+      return
+    }
+
+    setError('')
+    try {
+      const blob = await slmsApi.downloadReport(report.fileName)
+      const url = window.URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = url
+      link.download = report.fileName
+      document.body.appendChild(link)
+      link.click()
+      link.remove()
+      window.URL.revokeObjectURL(url)
+    } catch (downloadError) {
+      setError(getErrorMessage(downloadError))
+    }
+  }
+
   return (
     <section className="panel reveal">
       <p className="eyebrow">Admin Reports</p>
@@ -91,8 +112,16 @@ export default function AdminReportsPage() {
           {salesReport ? (
             <>
               <p>Type: {salesReport.reportType}</p>
-              <p>Format: {salesReport.format}</p>
-              <p>Download URL: {salesReport.downloadUrl}</p>
+              <p>Format: {salesReport.exportFormat}</p>
+              <p>Status: {salesReport.status}</p>
+              <p>File: {salesReport.fileName}</p>
+              <button
+                type="button"
+                className="btn btn-ghost"
+                onClick={() => downloadReport(salesReport)}
+              >
+                Download
+              </button>
             </>
           ) : (
             <p className="muted">No sales report generated yet.</p>
@@ -104,8 +133,16 @@ export default function AdminReportsPage() {
           {inventoryReport ? (
             <>
               <p>Type: {inventoryReport.reportType}</p>
-              <p>Format: {inventoryReport.format}</p>
-              <p>Download URL: {inventoryReport.downloadUrl}</p>
+              <p>Format: {inventoryReport.exportFormat}</p>
+              <p>Status: {inventoryReport.status}</p>
+              <p>File: {inventoryReport.fileName}</p>
+              <button
+                type="button"
+                className="btn btn-ghost"
+                onClick={() => downloadReport(inventoryReport)}
+              >
+                Download
+              </button>
             </>
           ) : (
             <p className="muted">No inventory report generated yet.</p>

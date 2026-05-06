@@ -123,7 +123,6 @@ export default function OrderDetailPage() {
           <p>
             Status: <StatusBadge status={order.shipment.status} />
           </p>
-          <p>Current location: {order.shipment.currentLocation}</p>
         </div>
       )}
 

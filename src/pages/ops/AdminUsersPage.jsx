@@ -20,7 +20,6 @@ export default function AdminUsersPage() {
     role: ROLES.CUSTOMER,
   })
   const [roleMap, setRoleMap] = useState({})
-  const [passwordMap, setPasswordMap] = useState({})
   const [loading, setLoading] = useState(true)
   const [notice, setNotice] = useState('')
   const [error, setError] = useState('')
@@ -64,21 +63,23 @@ export default function AdminUsersPage() {
     }
   }
 
-  const updateUser = async (username) => {
+  const updateUser = async (username, currentRole) => {
     setError('')
     setNotice('')
 
     try {
-      const payload = {
-        role: roleMap[username],
+      const nextRole = roleMap[username]
+      const payload = {}
+      if (nextRole && nextRole !== currentRole) {
+        payload.role = nextRole
       }
 
-      if (passwordMap[username]) {
-        payload.password = passwordMap[username]
+      if (!payload.role) {
+        setError('No role changes to save.')
+        return
       }
 
       await slmsApi.updateUser(username, payload)
-      setPasswordMap((prev) => ({ ...prev, [username]: '' }))
       setNotice(`User ${username} updated.`)
       await fetchUsers(pageData.number)
     } catch (updateError) {
@@ -153,65 +154,59 @@ export default function AdminUsersPage() {
                 <tr>
                   <th>Username</th>
                   <th>Role</th>
-                  <th>New password</th>
                   <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
-                {pageData.content.map((user) => (
-                  <tr key={user.username}>
-                    <td>{user.username}</td>
-                    <td>
-                      <select
-                        value={roleMap[user.username] || user.role}
-                        onChange={(event) =>
-                          setRoleMap((prev) => ({
-                            ...prev,
-                            [user.username]: event.target.value,
-                          }))
-                        }
-                      >
-                        {roleOptions().map((role) => (
-                          <option value={role} key={role}>
-                            {role}
-                          </option>
-                        ))}
-                      </select>
-                    </td>
-                    <td>
-                      <input
-                        type="password"
-                        placeholder="optional"
-                        value={passwordMap[user.username] || ''}
-                        onChange={(event) =>
-                          setPasswordMap((prev) => ({
-                            ...prev,
-                            [user.username]: event.target.value,
-                          }))
-                        }
-                      />
-                    </td>
-                    <td>
-                      <div className="button-row compact">
-                        <button
-                          type="button"
-                          className="btn btn-primary"
-                          onClick={() => updateUser(user.username)}
+                {pageData.content.map((user) => {
+                  const isAdminUser = user.role === ROLES.ADMIN
+                  const nextRole = roleMap[user.username] || user.role
+                  const canSave = !isAdminUser && nextRole !== user.role
+
+                  return (
+                    <tr key={user.username}>
+                      <td>{user.username}</td>
+                      <td>
+                        <select
+                          value={nextRole}
+                          disabled={isAdminUser}
+                          onChange={(event) =>
+                            setRoleMap((prev) => ({
+                              ...prev,
+                              [user.username]: event.target.value,
+                            }))
+                          }
                         >
-                          Save
-                        </button>
-                        <button
-                          type="button"
-                          className="btn btn-danger"
-                          disabled={user.username === session.username}
-                          onClick={() => deleteUser(user.username)}
-                        >
-                          Delete
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
+                          {roleOptions().map((role) => (
+                            <option value={role} key={role}>
+                              {role}
+                            </option>
+                          ))}
+                        </select>
+                      </td>
+                      <td>
+                        <div className="button-row compact">
+                          <button
+                            type="button"
+                            className="btn btn-primary"
+                            disabled={!canSave}
+                            onClick={() => updateUser(user.username, user.role)}
+                          >
+                            Save
+                          </button>
+                          <button
+                            type="button"
+                            className="btn btn-danger"
+                            disabled={user.username === session.username}
+                            onClick={() => deleteUser(user.username)}
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  )
+                })}
               </tbody>
             </table>
           </div>

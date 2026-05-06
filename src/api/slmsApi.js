@@ -1,4 +1,4 @@
-import { ApiError, httpRequest } from './httpClient'
+import { ApiError, httpRequest, httpDownload } from './httpClient'
 import { normalizePage } from '../utils/apiHelpers'
 
 async function emptyOnNotFoundPage(fetcher, fallbackPage = 0, fallbackSize = 20) {
@@ -191,6 +191,9 @@ export const slmsApi = {
     httpRequest('/api/reports/inventory', {
       query: { startDate, endDate, format },
     }),
+
+  downloadReport: (fileName) =>
+    httpDownload(`/api/reports/files/${encodeURIComponent(fileName)}`),
 
   scheduleBatchJob: (payload) =>
     httpRequest('/api/batch/jobs/schedule', {

@@ -59,6 +59,10 @@ export default function AdminBatchPage() {
     <section className="panel reveal">
       <p className="eyebrow">Admin Batch</p>
       <h2>Batch scheduling and logs</h2>
+      <p className="muted">
+        IMPORT_PRODUCT_DATA loads products from storage/imports/products.csv. GENERATE_DAILY_REPORTS creates
+        yesterday’s sales and inventory reports (PDF + EXCEL). AGGREGATE_SALES_DATA stores daily sales totals.
+      </p>
 
       {notice && <p className="inline-success">{notice}</p>}
       {error && <p className="inline-error">{error}</p>}

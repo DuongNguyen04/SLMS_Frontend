@@ -109,7 +109,6 @@ export default function OpsOrderDetailPage() {
           <p>
             Status: <StatusBadge status={order.shipment.status} />
           </p>
-          <p>Current location: {order.shipment.currentLocation}</p>
           <Link
             className="btn btn-ghost"
             to={`/ops/shipments?orderId=${encodeURIComponent(order.orderId)}`}

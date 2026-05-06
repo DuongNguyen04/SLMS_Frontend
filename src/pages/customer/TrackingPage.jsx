@@ -73,7 +73,6 @@ export default function TrackingPage() {
           <p>
             Current status: <StatusBadge status={shipment.status} />
           </p>
-          <p>Current location: {shipment.currentLocation}</p>
 
           <div className="tracking-rail">
             {TRACKING_STEPS.map((step) => {

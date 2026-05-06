@@ -109,3 +109,55 @@ export async function httpRequest(path, options = {}) {
 
   return payload
 }
+
+export async function httpDownload(path, options = {}) {
+  const {
+    method = 'GET',
+    query,
+    headers = {},
+    skipAuth = false,
+  } = options
+
+  const requestHeaders = {
+    Accept: '*/*',
+    ...headers,
+  }
+
+  if (!skipAuth) {
+    const token = getToken()
+    if (token) {
+      requestHeaders.Authorization = `Bearer ${token}`
+    }
+  }
+
+  const response = await fetch(buildUrl(path, query), {
+    method,
+    headers: requestHeaders,
+  })
+
+  if (!response.ok) {
+    const payload = await readResponseBody(response)
+    if (response.status === 401) {
+      onUnauthorized()
+    }
+
+    const message =
+      (payload && typeof payload === 'object' && payload.message) ||
+      response.statusText ||
+      'Request failed'
+
+    const details =
+      payload && typeof payload === 'object' && Array.isArray(payload.details)
+        ? payload.details
+        : []
+
+    const errorCode =
+      payload && typeof payload === 'object' && payload.error
+        ? payload.error
+        : 'HTTP_ERROR'
+
+    throw new ApiError(response.status, errorCode, message, details)
+  }
+
+  return response.blob()
+}

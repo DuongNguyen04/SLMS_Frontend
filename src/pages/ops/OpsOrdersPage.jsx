@@ -10,8 +10,8 @@ import { formatCurrency } from '../../utils/format'
 const PAGE_SIZE = 10
 
 function nextStatuses(currentStatus) {
-  if (currentStatus === 'PENDING') return ['CONFIRMED']
-  if (currentStatus === 'CONFIRMED') return ['SHIPPED']
+  if (currentStatus === 'PENDING') return ['CONFIRMED', 'CANCELLED']
+  if (currentStatus === 'CONFIRMED') return ['SHIPPED', 'CANCELLED']
   if (currentStatus === 'SHIPPED') return ['DELIVERED']
   return []
 }
@@ -122,11 +122,11 @@ export default function OpsOrdersPage() {
                             {availableTransitions.map((status) => (
                               <button
                                 type="button"
-                                className="btn btn-primary"
+                                className={status === 'CANCELLED' ? 'btn btn-danger' : 'btn btn-primary'}
                                 key={status}
                                 onClick={() => onUpdateStatus(order.orderId, status)}
                               >
-                                Mark {status}
+                                {status === 'CANCELLED' ? 'Cancel order' : `Mark ${status}`}
                               </button>
                             ))}
                           </div>
