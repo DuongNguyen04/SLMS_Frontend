@@ -213,6 +213,15 @@ export const slmsApi = {
       body: payload,
     }),
 
+  uploadImportProducts: (file) => {
+    const formData = new FormData()
+    formData.append('file', file)
+    return httpRequest('/api/batch/jobs/import/upload', {
+      method: 'POST',
+      body: formData,
+    })
+  },
+
   listBatchLogs: ({ page = 0, size = 20, jobType } = {}) =>
     emptyOnNotFoundPage(
       () =>

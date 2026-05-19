@@ -60,12 +60,15 @@ export async function httpRequest(path, options = {}) {
     skipAuth = false,
   } = options
 
+  const isFormData =
+    body && typeof FormData !== 'undefined' && body instanceof FormData
+
   const requestHeaders = {
     Accept: 'application/json',
     ...headers,
   }
 
-  if (body !== undefined && body !== null) {
+  if (body !== undefined && body !== null && !isFormData) {
     requestHeaders['Content-Type'] = 'application/json'
   }
 
@@ -79,7 +82,12 @@ export async function httpRequest(path, options = {}) {
   const response = await fetch(buildUrl(path, query), {
     method,
     headers: requestHeaders,
-    body: body !== undefined && body !== null ? JSON.stringify(body) : undefined,
+    body:
+      body !== undefined && body !== null
+        ? isFormData
+          ? body
+          : JSON.stringify(body)
+        : undefined,
   })
 
   const payload = await readResponseBody(response)
